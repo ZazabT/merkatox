@@ -88,7 +88,7 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className='max-w-full overflow-hidden'>
       {/* Hero Section - Full width, no spacing */}
       <HeroSection />
       
