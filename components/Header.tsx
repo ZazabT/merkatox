@@ -8,11 +8,11 @@ export default function Header() {
   const favoritesCount = useAppSelector((state) => state.favorites.items.length);
 
   return (
-    <header className="bg-white border-b shadow-sm sticky top-0 z-50">
-      <nav className="container mx-auto px-4 py-4">
+    <header className="fixed top-10 left-0 right-0 z-40 bg-transparent">
+      <nav className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-gray-900 hover:text-blue-600 transition">
+          <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-white hover:text-gray-200 transition">
             <ShoppingBag className="w-7 h-7" />
             <span>Merkatox</span>
           </Link>
@@ -21,14 +21,14 @@ export default function Header() {
           <div className="flex items-center gap-6">
             <Link 
               href="/" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition"
+              className="text-white hover:text-gray-200 font-medium transition"
             >
               Products
             </Link>
             
             <Link 
               href="/favorites" 
-              className="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-medium transition relative"
+              className="flex items-center gap-2 text-white hover:text-gray-200 font-medium transition relative"
             >
               <Heart className="w-5 h-5" />
               <span>Favorites</span>
@@ -41,7 +41,7 @@ export default function Header() {
             
             <Link 
               href="/create-product" 
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium transition"
+              className="flex items-center gap-2 bg-white text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 font-medium transition"
             >
               <Plus className="w-5 h-5" />
               <span>Create</span>

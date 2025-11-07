@@ -32,11 +32,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <StoreProvider>
-          {/* top header */}
+          {/* Fixed top header - above content */}
           <TopHeader/>
-         {/* nav bar  */}
+          
+          {/* Fixed navbar overlay */}
           <Header />
-          <main className="grow container mx-auto px-4 py-8">
+          
+          {/* Main content */}
+          <main className="grow">
             {children}
           </main>
 

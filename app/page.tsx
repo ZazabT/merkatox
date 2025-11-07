@@ -88,20 +88,22 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Hero Section */}
+    <div>
+      {/* Hero Section - Full width, no spacing */}
       <HeroSection />
       
-      {/* Header Section */}
-      <div className="space-y-4">
-        <h1 className="text-4xl font-bold text-gray-900">Discover Products</h1>
-        <p className="text-gray-600">Browse our collection of amazing products</p>
-      </div>
+      {/* Content Section - with container and padding */}
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        {/* Header Section */}
+        <div className="space-y-4">
+          <h1 className="text-4xl font-bold text-gray-900">Discover Products</h1>
+          <p className="text-gray-600">Browse our collection of amazing products</p>
+        </div>
 
-      {/* Search Bar */}
-      <div className="max-w-2xl">
-        <SearchBar onSearch={handleSearch} placeholder="Search for products..." />
-      </div>
+        {/* Search Bar */}
+        <div className="max-w-2xl">
+          <SearchBar onSearch={handleSearch} placeholder="Search for products..." />
+        </div>
 
       {/* Error Message */}
       {error && (
@@ -144,6 +146,7 @@ export default function Home() {
           <p className="text-gray-500">You&apos;ve reached the end of the list</p>
         </div>
       )}
+      </div>
     </div>
   );
 }

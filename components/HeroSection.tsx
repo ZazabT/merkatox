@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function HeroSection() {
   return (
-    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-0 h-[300px] md:h-[500px] rounded-lg overflow-hidden">
+    <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw] grid grid-cols-1 md:grid-cols-2 gap-0 h-[500px] md:h-[600px] overflow-hidden">
       {/* First Image - Always visible */}
       <div className="relative w-full h-full">
         <Image
