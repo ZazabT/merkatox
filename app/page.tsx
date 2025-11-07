@@ -7,7 +7,7 @@ import ProductCard from '@/components/ProductCard';
 import ProductCardSkeleton from '@/components/ProductCardSkeleton';
 import SearchBar from '@/components/SearchBar';
 import { Loader2 } from 'lucide-react';
-import TopHeader from '@/components/TopHeader'
+import HeroSection from '@/components/HeroSection';
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
@@ -89,10 +89,9 @@ export default function Home() {
 
   return (
     <div className="space-y-8">
-      {/* Top header  */}
-      <div>
-      <TopHeader/>
-      </div>
+      {/* Hero Section */}
+      <HeroSection />
+      
       {/* Header Section */}
       <div className="space-y-4">
         <h1 className="text-4xl font-bold text-gray-900">Discover Products</h1>

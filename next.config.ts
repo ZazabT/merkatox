@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: 'dummyjson.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+        pathname: '/**',
+      },
     ],
   },
 };

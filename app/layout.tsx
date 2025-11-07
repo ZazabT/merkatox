@@ -4,6 +4,7 @@ import "./globals.css";
 import StoreProvider from "@/lib/redux/StoreProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TopHeader from "@/components/TopHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <StoreProvider>
+          {/* top header */}
+          <TopHeader/>
          {/* nav bar  */}
           <Header />
           <main className="grow container mx-auto px-4 py-8">
