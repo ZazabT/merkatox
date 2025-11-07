@@ -95,14 +95,21 @@ export default function Home() {
       {/* Content Section - with container and padding */}
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Header Section */}
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-gray-900">Discover Products</h1>
-          <p className="text-gray-600">Browse our collection of amazing products</p>
+        <div className="space-y-6 text-center max-w-3xl mx-auto">
+          <div className="space-y-3">
+            <h1 className="text-5xl md:text-6xl font-extralight text-gray-900 tracking-tight leading-tight">
+              Discover Products
+            </h1>
+            <div className="w-24 h-px bg-gray-300 mx-auto"></div>
+          </div>
+          <p className="text-gray-500 font-light text-lg tracking-wide leading-relaxed">
+            Browse our curated collection of premium products
+          </p>
         </div>
 
         {/* Search Bar */}
-        <div className="max-w-2xl">
-          <SearchBar onSearch={handleSearch} placeholder="Search for products..." />
+        <div className="max-w-2xl mx-auto mt-8">
+          <SearchBar  onSearch={handleSearch} placeholder="Search for products..." />
         </div>
 
       {/* Error Message */}

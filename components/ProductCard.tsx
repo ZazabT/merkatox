@@ -62,10 +62,10 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.id}`} className="block">
-      <Card className="w-full overflow-hidden group bg-white text-foreground border border-gray-100 hover:shadow-2xl transition-all duration-500 h-full flex flex-col">
+      <Card className="w-full overflow-hidden group bg-white text-foreground  hover:shadow-xl transition-all duration-500 h-full flex flex-col rounded-none border border-gray-300">
         
         {/* Image Carousel */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-gray-50">
+        <div className="relative aspect-3/4 overflow-hidden bg-gray-50">
           <motion.div
             key={currentImageIndex}
             initial={{ opacity: 0 }}

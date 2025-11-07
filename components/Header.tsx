@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useAppSelector } from '@/lib/redux/hooks';
-import { Heart, ShoppingBag, Plus } from 'lucide-react';
+import { Heart, Plus } from 'lucide-react';
 
 export default function Header() {
   const favoritesCount = useAppSelector((state) => state.favorites.items.length);
@@ -28,7 +28,7 @@ export default function Header() {
             href="/" 
             className="flex items-center text-white hover:text-white transition-all duration-500 hover:scale-105 relative group"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0  from-transparent via-white/5 to-transparent rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <span className="text-5xl font-extralight tracking-[0.3em] relative z-10 drop-shadow-[0_4px_16px_rgba(255,255,255,0.3)]">
               MERKATOX
             </span>
