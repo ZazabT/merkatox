@@ -16,8 +16,14 @@ import { useTheme } from "next-themes"
 import { Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter } from "lucide-react"
 
 function Footerdemo() {
+  const [mounted, setMounted] = React.useState(false)
   const { theme, setTheme } = useTheme()
   const isDarkMode = theme === "dark"
+
+  // Prevent hydration mismatch
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <footer className="relative border-t bg-background text-foreground transition-colors duration-300">
@@ -132,18 +138,20 @@ function Footerdemo() {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="flex items-center space-x-2">
-              <Sun className="h-4 w-4" />
-              <Switch
-                id="dark-mode"
-                checked={isDarkMode}
-                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
-              />
-              <Moon className="h-4 w-4" />
-              <Label htmlFor="dark-mode" className="sr-only">
-                Toggle dark mode
-              </Label>
-            </div>
+            {mounted && (
+              <div className="flex items-center space-x-2">
+                <Sun className="h-4 w-4" />
+                <Switch
+                  id="dark-mode"
+                  checked={isDarkMode}
+                  onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                />
+                <Moon className="h-4 w-4" />
+                <Label htmlFor="dark-mode" className="sr-only">
+                  Toggle dark mode
+                </Label>
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-center md:flex-row">
