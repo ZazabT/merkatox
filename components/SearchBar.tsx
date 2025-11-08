@@ -10,7 +10,7 @@ export default function SearchBar({ onSearch, placeholder = 'Search products...'
     <input
       type="text"
       placeholder={placeholder}
-      className="w-full px-6 py-4 border-2 border-gray-600 rounded-lg focus:border-gray-900 focus:outline-none transition-colors font-light text-gray-900 placeholder:text-gray-400 placeholder:font-light"
+      className="w-full px-6 py-4 border-2 border-border rounded-lg focus:border-foreground focus:outline-none transition-colors font-light text-foreground placeholder:text-muted-foreground placeholder:font-light bg-background dark:bg-card"
       onChange={(e) => onSearch(e.target.value)}
     />
   );

@@ -74,10 +74,10 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.id}`} className="block">
-      <Card className="w-full overflow-hidden group bg-white text-foreground hover:shadow-2xl transition-all duration-500 h-full flex flex-col rounded-lg border-2 border-gray-200 hover:border-black max-h-[560px]">
+      <Card className="w-full overflow-hidden group bg-card text-card-foreground hover:shadow-2xl transition-all duration-500 h-full flex flex-col rounded-lg border-2 border-border hover:border-foreground dark:hover:border-gray-400 max-h-[560px]">
         
         {/* Image Carousel */}
-        <div className="relative aspect-3/4 overflow-hidden bg-gray-50">
+        <div className="relative aspect-3/4 overflow-hidden bg-muted/30 dark:bg-muted/10">
           <motion.div
             key={currentImageIndex}
             initial={{ opacity: 0 }}
@@ -100,7 +100,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white"
+                className="h-8 w-8 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:bg-background dark:bg-gray-800/90 dark:hover:bg-gray-800"
                 onClick={prevImage}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -108,7 +108,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white"
+                className="h-8 w-8 rounded-full bg-background/90 backdrop-blur-sm shadow-lg hover:bg-background dark:bg-gray-800/90 dark:hover:bg-gray-800"
                 onClick={nextImage}
               >
                 <ChevronRight className="h-4 w-4" />
@@ -156,7 +156,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             className={`absolute top-3 right-3 h-9 w-9 rounded-full backdrop-blur-sm shadow-xl hover:scale-110 transition-all duration-300 ${
               isFavorite 
                 ? 'bg-rose-500 text-white hover:bg-rose-600' 
-                : 'bg-white/90 hover:bg-white text-gray-700'
+                : 'bg-background/90 hover:bg-background text-foreground dark:bg-gray-800/90 dark:hover:bg-gray-800'
             }`}
             onClick={handleFavoriteToggle}
           >
@@ -165,22 +165,22 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Content */}
-        <CardContent className="p-5 bg-white">
+        <CardContent className="p-5 bg-card dark:bg-card">
           <div className="space-y-3">
             {/* Category & Brand */}
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-600 font-medium uppercase tracking-[0.2em]">
+              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-[0.2em]">
                 {product.category}
               </span>
               {product.brand && (
-                <span className="text-[10px] text-gray-500 font-light uppercase tracking-wider">
+                <span className="text-[10px] text-muted-foreground/80 font-light uppercase tracking-wider">
                   {product.brand}
                 </span>
               )}
             </div>
 
             {/* Title */}
-            <h3 className="font-medium text-gray-900 line-clamp-2 leading-snug group-hover:text-gray-700 transition-colors">
+            <h3 className="font-medium text-foreground line-clamp-2 leading-snug group-hover:text-foreground/80 transition-colors">
               {product.title}
             </h3>
 
@@ -188,9 +188,9 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className="flex items-center gap-2">
               <div className="flex items-center">
                 <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
-                <span className="ml-1 text-sm font-medium text-gray-900">{product.rating.toFixed(1)}</span>
+                <span className="ml-1 text-sm font-medium text-foreground">{product.rating.toFixed(1)}</span>
               </div>
-              <span className="text-xs text-gray-500 font-light">
+              <span className="text-xs text-muted-foreground font-light">
                 ({product.reviews?.length || 0})
               </span>
               {product.stock > 20 && (
@@ -202,11 +202,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             {/* Price */}
             <div className="flex items-baseline gap-2 pt-1">
-              <span className="text-2xl font-bold text-gray-900 tracking-wide">
+              <span className="text-2xl font-bold text-foreground tracking-wide">
                 ${product.price.toFixed(2)}
               </span>
               {originalPrice && (
-                <span className="text-sm text-gray-400 line-through font-light">
+                <span className="text-sm text-muted-foreground line-through font-light">
                   ${originalPrice.toFixed(2)}
                 </span>
               )}
@@ -215,9 +215,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         </CardContent>
 
         {/* Footer */}
-        <CardFooter className="p-5 pt-0 bg-white">
+        <CardFooter className="p-5 pt-0 bg-card dark:bg-card">
           <Button
-            className="w-full bg-gray-900 hover:bg-black text-white font-medium tracking-widest uppercase text-xs transition-all"
+            className="w-full bg-foreground hover:bg-foreground/90 text-background font-medium tracking-widest uppercase text-xs transition-all dark:bg-background dark:text-foreground dark:hover:bg-background/90"
             onClick={handleAddToCart}
             disabled={isAddingToCart || isAddedToCart}
           >

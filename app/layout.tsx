@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TopHeader from "@/components/TopHeader";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,24 +34,26 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
         suppressHydrationWarning
       >
-        <StoreProvider>
-          {/* Toast notifications */}
-          <Toaster position="top-right" richColors closeButton />
-          
-          {/* Fixed top header - above content */}
-          <TopHeader/>
-          
-          {/* Fixed navbar overlay */}
-          <Header />
-          
-          {/* Main content */}
-          <main className="grow">
-            {children}
-          </main>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <StoreProvider>
+            {/* Toast notifications */}
+            <Toaster position="top-right" richColors closeButton />
+            
+            {/* Fixed top header - above content */}
+            <TopHeader/>
+            
+            {/* Fixed navbar overlay */}
+            <Header />
+            
+            {/* Main content */}
+            <main className="grow">
+              {children}
+            </main>
 
-          {/* Footer */}
-          <Footer />
-        </StoreProvider>
+            {/* Footer */}
+            <Footer />
+          </StoreProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

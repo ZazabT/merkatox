@@ -115,19 +115,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white pt-32 flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-gray-900" />
+      <div className="min-h-screen bg-background pt-32 flex items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-foreground" />
       </div>
     );
   }
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-white pt-32">
+      <div className="min-h-screen bg-background pt-32">
         <div className="container mx-auto px-4 py-12 max-w-4xl text-center">
-          <h1 className="text-4xl font-light text-gray-900 mb-4">Product Not Found</h1>
-          <p className="text-gray-600 mb-8">{error || 'The product you are looking for does not exist.'}</p>
-          <Button onClick={() => router.push('/')} className="bg-gray-900 hover:bg-gray-800">
+          <h1 className="text-4xl font-light text-foreground mb-4">Product Not Found</h1>
+          <p className="text-muted-foreground mb-8">{error || 'The product you are looking for does not exist.'}</p>
+          <Button onClick={() => router.push('/')} className="bg-foreground hover:bg-foreground/90 text-background dark:bg-background dark:text-foreground">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Products
           </Button>
@@ -142,13 +142,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     : null;
 
   return (
-    <div className="min-h-screen bg-white pt-32">
+    <div className="min-h-screen bg-background pt-32">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Back Button */}
         <Button
           variant="ghost"
           onClick={() => router.back()}
-          className="mb-8 text-gray-900 hover:text-gray-700"
+          className="mb-8 text-foreground hover:text-foreground/80"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
@@ -157,7 +157,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="relative aspect-square bg-gray-50 border border-gray-300">
+            <div className="relative aspect-square bg-muted/30 border border-border">
               <Image
                 src={images[selectedImage]}
                 alt={product.title}
@@ -170,7 +170,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               {/* Badges */}
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 {product.discountPercentage > 0 && (
-                  <Badge className="bg-black text-white hover:bg-black/90 font-light tracking-widest">
+                  <Badge className="bg-foreground text-background hover:bg-foreground/90 font-light tracking-widest">
                     -{Math.round(product.discountPercentage)}% OFF
                   </Badge>
                 )}
@@ -191,8 +191,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     onClick={() => setSelectedImage(idx)}
                     className={`relative aspect-square border-2 transition-all ${
                       selectedImage === idx 
-                        ? 'border-gray-900' 
-                        : 'border-gray-200 hover:border-gray-400'
+                        ? 'border-foreground' 
+                        : 'border-border hover:border-foreground/50'
                     }`}
                   >
                     <Image
@@ -215,19 +215,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2 flex-1">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-500 font-light uppercase tracking-[0.2em]">
+                    <span className="text-xs text-muted-foreground font-light uppercase tracking-[0.2em]">
                       {product.category}
                     </span>
                     {product.brand && (
                       <>
-                        <span className="text-gray-300">•</span>
-                        <span className="text-xs text-gray-500 font-light uppercase tracking-wider">
+                        <span className="text-muted-foreground/50">•</span>
+                        <span className="text-xs text-muted-foreground font-light uppercase tracking-wider">
                           {product.brand}
                         </span>
                       </>
                     )}
                   </div>
-                  <h1 className="text-4xl font-light text-gray-900 leading-tight">
+                  <h1 className="text-4xl font-light text-foreground leading-tight">
                     {product.title}
                   </h1>
                 </div>
@@ -238,8 +238,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   onClick={handleFavoriteToggle}
                   className={`rounded-full border-2 ${
                     isFavorite 
-                      ? 'border-rose-500 text-rose-500 hover:bg-rose-50' 
-                      : 'border-gray-300 hover:border-gray-900'
+                      ? 'border-rose-500 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30' 
+                      : 'border-border hover:border-foreground'
                   }`}
                 >
                   <Heart className={`h-5 w-5 ${isFavorite ? 'fill-rose-500' : ''}`} />
@@ -254,25 +254,25 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                       key={i}
                       className={`h-4 w-4 ${
                         i < Math.floor(product.rating)
-                          ? 'fill-gray-900 text-gray-900'
-                          : 'text-gray-300'
+                          ? 'fill-foreground text-foreground'
+                          : 'text-muted/30'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-sm font-light text-gray-600">
+                <span className="text-sm font-light text-muted-foreground">
                   {product.rating.toFixed(1)} ({product.reviews?.length || 0} reviews)
                 </span>
               </div>
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-3 pt-2 border-t border-gray-200">
-              <span className="text-4xl font-light text-gray-900">
+            <div className="flex items-baseline gap-3 pt-2 border-t border-border">
+              <span className="text-4xl font-light text-foreground">
                 ${product.price.toFixed(2)}
               </span>
               {originalPrice && (
-                <span className="text-xl text-gray-400 line-through font-light">
+                <span className="text-xl text-muted-foreground line-through font-light">
                   ${originalPrice.toFixed(2)}
                 </span>
               )}
@@ -280,10 +280,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
             {/* Description */}
             <div className="space-y-2 pt-4">
-              <h3 className="text-sm font-light uppercase tracking-[0.2em] text-gray-700">
+              <h3 className="text-sm font-light uppercase tracking-[0.2em] text-muted-foreground">
                 Description
               </h3>
-              <p className="text-gray-600 font-light leading-relaxed">
+              <p className="text-muted-foreground font-light leading-relaxed">
                 {product.description}
               </p>
             </div>
@@ -293,7 +293,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <Button
                 onClick={handleAddToCart}
                 disabled={isAddingToCart || isAddedToCart || product.stock === 0}
-                className="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-light tracking-widest uppercase text-xs h-14"
+                className="flex-1 bg-foreground hover:bg-foreground/90 text-background font-light tracking-widest uppercase text-xs h-14 dark:bg-background dark:text-foreground dark:hover:bg-background/90"
               >
                 {isAddingToCart ? (
                   <>
@@ -317,11 +317,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
 
             {/* Admin Actions */}
-            <div className="flex gap-4 pt-4 border-t border-gray-200">
+            <div className="flex gap-4 pt-4 border-t border-border">
               <Button
                 variant="outline"
                 onClick={() => router.push(`/edit-product/${unwrappedParams.id}`)}
-                className="flex-1 border-2 border-gray-300 hover:border-gray-900 font-light tracking-widest uppercase text-xs h-12"
+                className="flex-1 border-2 border-border hover:border-foreground font-light tracking-widest uppercase text-xs h-12"
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Product
@@ -329,7 +329,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <Button
                 variant="outline"
                 onClick={() => setShowDeleteDialog(true)}
-                className="flex-1 border-2 border-red-300 text-red-600 hover:border-red-600 hover:bg-red-50 font-light tracking-widest uppercase text-xs h-12"
+                className="flex-1 border-2 border-red-300 text-red-600 hover:border-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 font-light tracking-widest uppercase text-xs h-12"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete
@@ -338,27 +338,27 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
             {/* Product Details */}
             <div className="grid grid-cols-1 gap-4 pt-6">
-              <Card className="border-gray-200 rounded-none">
+              <Card className="border-border rounded-none bg-card">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center gap-3">
-                    <Package className="h-5 w-5 text-gray-600" />
+                    <Package className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">Stock</p>
-                      <p className="font-light text-gray-900">{product.stock} units available</p>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider">Stock</p>
+                      <p className="font-light text-foreground">{product.stock} units available</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <TruckIcon className="h-5 w-5 text-gray-600" />
+                    <TruckIcon className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">Shipping</p>
-                      <p className="font-light text-gray-900">{product.shippingInformation}</p>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider">Shipping</p>
+                      <p className="font-light text-foreground">{product.shippingInformation}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <ShieldCheck className="h-5 w-5 text-gray-600" />
+                    <ShieldCheck className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">Warranty</p>
-                      <p className="font-light text-gray-900">{product.warrantyInformation}</p>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider">Warranty</p>
+                      <p className="font-light text-foreground">{product.warrantyInformation}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -367,18 +367,18 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
             {/* Reviews */}
             {product.reviews && product.reviews.length > 0 && (
-              <div className="space-y-4 pt-6 border-t border-gray-200">
-                <h3 className="text-sm font-light uppercase tracking-[0.2em] text-gray-700">
+              <div className="space-y-4 pt-6 border-t border-border">
+                <h3 className="text-sm font-light uppercase tracking-[0.2em] text-muted-foreground">
                   Customer Reviews
                 </h3>
                 <div className="space-y-4">
                   {product.reviews.slice(0, 3).map((review, idx) => (
-                    <Card key={idx} className="border-gray-200 rounded-none">
+                    <Card key={idx} className="border-border rounded-none bg-card">
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <p className="font-light text-gray-900">{review.reviewerName}</p>
-                            <p className="text-xs text-gray-500">{new Date(review.date).toLocaleDateString()}</p>
+                            <p className="font-light text-foreground">{review.reviewerName}</p>
+                            <p className="text-xs text-muted-foreground">{new Date(review.date).toLocaleDateString()}</p>
                           </div>
                           <div className="flex items-center gap-1">
                             {[...Array(5)].map((_, i) => (
@@ -386,14 +386,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                                 key={i}
                                 className={`h-3 w-3 ${
                                   i < review.rating
-                                    ? 'fill-gray-900 text-gray-900'
-                                    : 'text-gray-300'
+                                    ? 'fill-foreground text-foreground'
+                                    : 'text-muted/30'
                                 }`}
                               />
                             ))}
                           </div>
                         </div>
-                        <p className="text-sm font-light text-gray-600 leading-relaxed">
+                        <p className="text-sm font-light text-muted-foreground leading-relaxed">
                           {review.comment}
                         </p>
                       </CardContent>
@@ -409,9 +409,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       {/* Delete Confirmation Dialog */}
       {showDeleteDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white max-w-md w-full p-8 border-2 border-gray-300 shadow-2xl">
-            <h2 className="text-2xl font-light text-gray-900 mb-4">Delete Product</h2>
-            <p className="text-gray-600 font-light mb-6">
+          <div className="bg-card max-w-md w-full p-8 border-2 border-border shadow-2xl">
+            <h2 className="text-2xl font-light text-foreground mb-4">Delete Product</h2>
+            <p className="text-muted-foreground font-light mb-6">
               Are you sure you want to delete &quot;{product.title}&quot;? This action cannot be undone.
             </p>
             <div className="flex gap-4">
@@ -436,7 +436,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 onClick={() => setShowDeleteDialog(false)}
                 disabled={isDeleting}
                 variant="outline"
-                className="flex-1 border-2 border-gray-300 hover:border-gray-900 font-light tracking-widest uppercase text-xs h-12"
+                className="flex-1 border-2 border-border hover:border-foreground font-light tracking-widest uppercase text-xs h-12"
               >
                 Cancel
               </Button>

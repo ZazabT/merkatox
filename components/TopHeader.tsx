@@ -37,7 +37,8 @@ export default function TopHeader() {
   return (
     <div
       className={clsx(
-        'fixed top-0 left-0 right-0 z-50 overflow-hidden bg-black text-white transition-all duration-300',
+        'fixed top-0 left-0 right-0 z-50 overflow-hidden transition-all duration-300 backdrop-blur-lg',
+        'bg-gray-900/95 text-white dark:bg-gray-950/95',
         isClosing ? 'max-h-0 opacity-0' : 'max-h-16 opacity-100'
       )}
     >
