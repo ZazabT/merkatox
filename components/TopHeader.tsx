@@ -58,7 +58,7 @@ export default function TopHeader() {
           type="button"
           size="icon"
           onClick={handleClose}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white dark:text-white dark:bg-gray-950/95"
           aria-label="Close announcements"
         >
           <X className="h-4 w-4" />
