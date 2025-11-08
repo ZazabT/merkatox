@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { fetchProductById, deleteProduct, fetchProductsByCategory } from '@/lib/api/products';
 import { Product } from '@/types/product';
 import Image from 'next/image';
-import Link from 'next/link';
 import { toast } from 'sonner';
 import { 
   ArrowLeft, 
@@ -70,6 +69,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           }
         }
       } catch (err) {
+        console.log(err);
         const errorMessage = 'Failed to load product. Please try again.';
         setError(errorMessage);
         toast.error('Error Loading Product', {
@@ -123,6 +123,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         router.push('/');
       }, 500);
     } catch (err) {
+      console.log(err);
       const errorMessage = 'Failed to delete product. Please try again.';
       setError(errorMessage);
       toast.error('Deletion Failed', {
@@ -177,7 +178,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="relative aspect-square bg-gradient-to-br from-muted/20 via-muted/10 to-background border-2 border-border rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-500">
+            <div className="relative aspect-square from-muted/20 via-muted/10 to-background border-2 border-border rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-500">
               <Image
                 src={images[selectedImage]}
                 alt={product.title}
@@ -190,12 +191,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               {/* Badges */}
               <div className="absolute top-6 left-6 flex flex-col gap-3">
                 {product.discountPercentage > 0 && (
-                  <Badge className="bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-700 hover:to-rose-700 font-medium tracking-widest shadow-lg px-4 py-2 text-sm">
+                  <Badge className=" from-red-600 to-rose-600 text-white hover:from-red-700 hover:to-rose-700 font-medium tracking-widest shadow-lg px-4 py-2 text-sm">
                     -{Math.round(product.discountPercentage)}% OFF
                   </Badge>
                 )}
                 {product.stock <= 10 && product.stock > 0 && (
-                  <Badge className="bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 font-medium shadow-lg px-4 py-2">
+                  <Badge className=" from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 font-medium shadow-lg px-4 py-2">
                     Only {product.stock} left
                   </Badge>
                 )}
@@ -247,7 +248,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                       </>
                     )}
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-light text-foreground leading-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+                  <h1 className="text-4xl md:text-5xl font-light text-foreground leading-tight from-foreground to-foreground/70 bg-clip-text">
                     {product.title}
                   </h1>
                 </div>
@@ -288,7 +289,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
             {/* Price */}
             <div className="flex items-baseline gap-4 pt-4 pb-4 border-t border-border">
-              <span className="text-5xl font-light text-foreground bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+              <span className="text-5xl font-light text-foreground from-foreground to-foreground/80 bg-clip-text">
                 ${product.price.toFixed(2)}
               </span>
               {originalPrice && (
@@ -318,7 +319,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <Button
                 onClick={handleAddToCart}
                 disabled={isAddingToCart || isAddedToCart || product.stock === 0}
-                className="flex-1 bg-gradient-to-r from-foreground to-foreground/90 hover:from-foreground/90 hover:to-foreground/80 text-background font-medium tracking-widest uppercase text-sm h-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 dark:from-background dark:to-background/90 dark:text-foreground"
+                className="flex-1 from-foreground to-foreground/90 hover:from-foreground/90 hover:to-foreground/80 text-background font-medium tracking-widest uppercase text-sm h-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 dark:from-background dark:to-background/90 dark:text-foreground"
               >
                 {isAddingToCart ? (
                   <>

@@ -3,7 +3,7 @@ import Image from 'next/image';
 export default function HeroSection() {
   return (
     <div className="w-screen relative left-1/2 right-1/2 -mx-[50vw] grid grid-cols-1 md:grid-cols-2 gap-0 h-screen overflow-hidden">
-      {/* First Image - Always visible */}
+      {/* Left Image Section */}
       <div className="relative w-full h-full">
         <Image
           src="https://images.pexels.com/photos/2661256/pexels-photo-2661256.jpeg"
@@ -14,7 +14,7 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* Second Image - Hidden on mobile, visible on md and up */}
+      {/* Right Image Section */}
       <div className="relative w-full h-full hidden md:block">
         <Image
           src="https://images.pexels.com/photos/1977292/pexels-photo-1977292.jpeg"
@@ -25,10 +25,11 @@ export default function HeroSection() {
       </div>
 
       {/* Dark overlay for better text visibility */}
-      <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px] z-5"></div>
 
       {/* Content Overlay - Bottom aligned */}
-      <div className="absolute inset-0 flex flex-col items-center justify-end z-10 px-4 md:px-8 pb-12 md:pb-20 space-y-3 md:space-y-6">
+      <div className="absolute inset-0 flex flex-col items-center justify-end z-10 px-4 md:px-8 pb-12 md:pb-20 space-y-3 md:space-y-6 pointer-events-none">
+        <div className="pointer-events-auto">
         
         {/* Discount Text */}
         <div className="text-center">
@@ -52,6 +53,7 @@ export default function HeroSection() {
           </button>
         </div>
 
+        </div>
       </div>
     </div>
   );

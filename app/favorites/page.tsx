@@ -39,7 +39,7 @@ export default function FavoritesPage() {
         ) : (
           <div className="flex flex-col items-center justify-center py-20 space-y-6">
             <div className="relative">
-              <Heart className="w-24 h-24 text-muted/30 stroke-[1]" />
+              <Heart className="w-24 h-24 text-muted/30" />
             </div>
             <div className="text-center space-y-2 max-w-md">
               <h3 className="text-2xl font-light text-foreground">No favorites yet</h3>
