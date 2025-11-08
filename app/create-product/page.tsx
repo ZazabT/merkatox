@@ -1,15 +1,13 @@
 'use client';
 
-import { use, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchProductById, updateProduct } from '@/lib/api/products';
-import { Edit, Loader2, Check, ArrowLeft } from 'lucide-react';
+import { createProduct } from '@/lib/api/products';
+import { Plus, Loader2, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default function CreateProductPage() {
   const router = useRouter();
-  const unwrappedParams = use(params);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -22,33 +20,6 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     brand: '',
     category: '',
   });
-
-  useEffect(() => {
-    const loadProduct = async () => {
-      try {
-        setIsLoading(true);
-        const product = await fetchProductById(parseInt(unwrappedParams.id));
-        setFormData({
-          title: product.title,
-          description: product.description,
-          price: product.price.toString(),
-          stock: product.stock.toString(),
-          brand: product.brand || '',
-          category: product.category,
-        });
-      } catch (err) {
-        const errorMessage = 'Failed to load product. Please try again.';
-        setError(errorMessage);
-        toast.error('Error Loading Product', {
-          description: errorMessage,
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadProduct();
-  }, [unwrappedParams.id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -79,59 +50,42 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         category: formData.category,
       };
 
-      const updatedProduct = await updateProduct(parseInt(unwrappedParams.id), productData);
+      const newProduct = await createProduct(productData);
       
       setSuccess(true);
-      toast.success('Product updated successfully!', {
-        description: `${updatedProduct.title} has been updated.`,
+      toast.success('Product created successfully!', {
+        description: `${newProduct.title} has been added to the store.`,
       });
       
       setTimeout(() => {
-        router.push(`/product/${unwrappedParams.id}`);
+        router.push('/');
       }, 1500);
     } catch (err) {
-      const errorMessage = 'Failed to update product. Please try again.';
+      const errorMessage = 'Failed to create product. Please try again.';
       setError(errorMessage);
-      toast.error('Update Failed', {
+      toast.error('Creation Failed', {
         description: errorMessage,
       });
       setIsSubmitting(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white pt-32 flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-gray-900" />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-white pt-32">
       <div className="container mx-auto px-4 py-12 max-w-3xl">
-        {/* Back Button */}
-        <button
-          onClick={() => router.back()}
-          className="mb-8 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </button>
-
         {/* Header Section */}
         <div className="space-y-6 text-center mb-12">
           <div className="space-y-3">
             <div className="flex items-center justify-center gap-3">
-              <Edit className="w-8 h-8 text-gray-900" />
+              <Plus className="w-8 h-8 text-gray-900" />
               <h1 className="text-5xl md:text-6xl font-extralight text-gray-900 tracking-tight leading-tight">
-                Edit Product
+                Create Product
               </h1>
             </div>
             <div className="w-24 h-px bg-gray-300 mx-auto"></div>
           </div>
           <p className="text-gray-500 font-light text-lg tracking-wide leading-relaxed">
-            Update product information
+            Add a new product to the collection
           </p>
         </div>
 
@@ -274,7 +228,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             {success && (
               <div className="bg-emerald-50 border-2 border-emerald-200 text-emerald-700 px-4 py-3 font-light flex items-center gap-2">
                 <Check className="w-5 h-5" />
-                Product updated successfully! Redirecting...
+                Product created successfully! Redirecting...
               </div>
             )}
 
@@ -288,24 +242,24 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Updating...
+                    Creating...
                   </>
                 ) : success ? (
                   <>
                     <Check className="w-4 h-4" />
-                    Updated
+                    Created
                   </>
                 ) : (
                   <>
-                    <Edit className="w-4 h-4" />
-                    Update Product
+                    <Plus className="w-4 h-4" />
+                    Create Product
                   </>
                 )}
               </button>
 
               <button
                 type="button"
-                onClick={() => router.back()}
+                onClick={() => router.push('/')}
                 className="px-8 py-4 border-2 border-gray-300 hover:border-gray-900 text-gray-900 font-light tracking-widest uppercase text-xs transition-all duration-300"
               >
                 Cancel

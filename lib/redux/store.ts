@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import favoritesReducer from './slices/favoritesSlice';
 import themeReducer from './slices/themeSlice';
+import uiReducer from './slices/uiSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       favorites: favoritesReducer,
       theme: themeReducer,
+      ui: uiReducer,
     },
   });
 };
