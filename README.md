@@ -29,7 +29,6 @@ A feature-rich, responsive e-commerce platform built with Next.js 14, TypeScript
 - **Create Products** - Add new products with form validation
 - **Edit Products** - Update existing product information
 - **Delete Products** - Remove products with confirmation dialog
-- **Image Upload** - Support for product images
 
 ### 📱 Responsive Navigation
 - **Desktop Menu** - Full navigation with all links
