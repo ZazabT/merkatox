@@ -5,6 +5,7 @@ import StoreProvider from "@/lib/redux/StoreProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TopHeader from "@/components/TopHeader";
+import ScrollToTop from "@/components/ScrollToTop";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -52,6 +53,9 @@ export default function RootLayout({
 
             {/* Footer */}
             <Footer />
+
+            {/* Scroll to Top Button */}
+            <ScrollToTop />
           </StoreProvider>
         </ThemeProvider>
       </body>
