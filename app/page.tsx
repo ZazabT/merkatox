@@ -1,13 +1,20 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { fetchProducts, searchProducts } from '@/lib/api/products';
+import { fetchProducts, searchProducts, fetchCategories, fetchProductsByCategory } from '@/lib/api/products';
 import { Product } from '@/types/product';
 import ProductCard from '@/components/ProductCard';
 import ProductCardSkeleton from '@/components/ProductCardSkeleton';
 import SearchBar from '@/components/SearchBar';
-import { Loader2, ChevronRight } from 'lucide-react';
+import { Loader2, ChevronRight, SlidersHorizontal, ArrowUpDown, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import HeroSection from '@/components/HeroSection';
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,8 +24,25 @@ export default function Home() {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('default');
+  const [totalProducts, setTotalProducts] = useState<number>(0);
 
-  const LIMIT = 10;
+  const LIMIT = 12;
+
+  // Load categories on mount
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const cats = await fetchCategories();
+        setCategories(cats);
+      } catch (err) {
+        console.error('Error loading categories:', err);
+      }
+    };
+    loadCategories();
+  }, []);
 
   // Fetch products
   const loadProducts = useCallback(async (isNewSearch = false) => {
@@ -30,24 +54,42 @@ export default function Home() {
       
       const currentSkip = isNewSearch ? 0 : skip;
       
-      const response = searchQuery
-        ? await searchProducts(searchQuery)
-        : await fetchProducts(LIMIT, currentSkip);
+      let response;
+      if (searchQuery) {
+        response = await searchProducts(searchQuery);
+      } else if (selectedCategory !== 'all') {
+        response = await fetchProductsByCategory(selectedCategory);
+      } else {
+        response = await fetchProducts(LIMIT, currentSkip);
+      }
+
+      // Apply sorting
+      const sortedProducts = [...response.products];
+      if (sortBy === 'price-low') {
+        sortedProducts.sort((a, b) => a.price - b.price);
+      } else if (sortBy === 'price-high') {
+        sortedProducts.sort((a, b) => b.price - a.price);
+      } else if (sortBy === 'rating') {
+        sortedProducts.sort((a, b) => b.rating - a.rating);
+      } else if (sortBy === 'name') {
+        sortedProducts.sort((a, b) => a.title.localeCompare(b.title));
+      }
 
       if (isNewSearch) {
-        setProducts(response.products);
+        setProducts(sortedProducts);
         setSkip(LIMIT);
       } else {
         // Deduplicate products by ID
         setProducts((prev) => {
           const existingIds = new Set(prev.map(p => p.id));
-          const newProducts = response.products.filter(p => !existingIds.has(p.id));
+          const newProducts = sortedProducts.filter(p => !existingIds.has(p.id));
           return [...prev, ...newProducts];
         });
         setSkip((prev) => prev + LIMIT);
       }
 
       setHasMore(response.products.length === LIMIT && currentSkip + LIMIT < response.total);
+      setTotalProducts(response.total);
     } catch (err) {
       setError('Failed to load products. Please try again.');
       console.error('Error loading products:', err);
@@ -55,7 +97,7 @@ export default function Home() {
       setLoading(false);
       setInitialLoading(false);
     }
-  }, [skip, searchQuery, loading]);
+  }, [skip, searchQuery, loading, selectedCategory, sortBy]);
 
   // Initial load
   useEffect(() => {
@@ -72,6 +114,12 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Reload when category or sort changes
+  useEffect(() => {
+    setSkip(0);
+    loadProducts(true);
+  }, [selectedCategory, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Load more handler
   const handleLoadMore = () => {
     if (hasMore && !loading) {
@@ -82,6 +130,14 @@ export default function Home() {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
+
+  const handleClearFilters = () => {
+    setSelectedCategory('all');
+    setSortBy('default');
+    setSearchQuery('');
+  };
+
+  const hasActiveFilters = selectedCategory !== 'all' || sortBy !== 'default' || searchQuery !== '';
 
   return (
     <div className='max-w-full overflow-hidden'>
@@ -103,9 +159,73 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mt-8">
-          <SearchBar  onSearch={handleSearch} placeholder="Search for products..." />
+        {/* Search and Filters */}
+        <div className="max-w-6xl mx-auto mt-8 space-y-4">
+          {/* Search Bar */}
+          <SearchBar  onSearch={handleSearch} placeholder="Search for products..." value={searchQuery} />
+          
+          {/* Filter and Sort Controls */}
+          <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
+            <div className="flex items-center gap-2">
+              <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-foreground">Filter by:</span>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-[180px] bg-background border-border">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((category) => {
+                    const formatted = category.replace(/-/g, ' ').split(' ').map(word => 
+                      word.charAt(0).toUpperCase() + word.slice(1)
+                    ).join(' ');
+                    return (
+                      <SelectItem key={category} value={category}>
+                        {formatted}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-foreground">Sort by:</span>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[180px] bg-background border-border">
+                  <SelectValue placeholder="Default" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
+                  <SelectItem value="price-low">Price: Low to High</SelectItem>
+                  <SelectItem value="price-high">Price: High to Low</SelectItem>
+                  <SelectItem value="rating">Highest Rated</SelectItem>
+                  <SelectItem value="name">Name: A to Z</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Results Count and Clear Filters */}
+            <div className="flex items-center gap-3">
+              {!initialLoading && products.length > 0 && (
+                <div className="text-sm text-muted-foreground font-medium">
+                  Showing {Math.min(1, products.length)}-{products.length} of {totalProducts} {totalProducts === 1 ? 'product' : 'products'}
+                </div>
+              )}
+              {hasActiveFilters && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearFilters}
+                  className="text-xs font-medium border-border hover:bg-muted transition-colors"
+                >
+                  <X className="h-3 w-3 mr-1" />
+                  Clear Filters
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
 
       {/* Error Message */}

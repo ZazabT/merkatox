@@ -2,7 +2,7 @@
 
 import { use, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchProductById, deleteProduct } from '@/lib/api/products';
+import { fetchProductById, deleteProduct, fetchProductsByCategory } from '@/lib/api/products';
 import { Product } from '@/types/product';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,6 +23,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import ProductCard from '@/components/ProductCard';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { toggleFavorite } from '@/lib/redux/slices/favoritesSlice';
 
@@ -40,6 +41,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
+  const [loadingSimilar, setLoadingSimilar] = useState(false);
 
   const isFavorite = product ? favorites.some((fav) => fav.id === product.id) : false;
 
@@ -49,6 +52,23 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         setIsLoading(true);
         const data = await fetchProductById(parseInt(unwrappedParams.id));
         setProduct(data);
+        
+        // Load similar products from same category
+        if (data.category) {
+          setLoadingSimilar(true);
+          try {
+            const similarData = await fetchProductsByCategory(data.category);
+            // Filter out current product and limit to 4
+            const filtered = similarData.products
+              .filter(p => p.id !== data.id)
+              .slice(0, 4);
+            setSimilarProducts(filtered);
+          } catch (err) {
+            console.error('Error loading similar products:', err);
+          } finally {
+            setLoadingSimilar(false);
+          }
+        }
       } catch (err) {
         const errorMessage = 'Failed to load product. Please try again.';
         setError(errorMessage);
@@ -157,25 +177,25 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Image Gallery */}
           <div className="space-y-4">
-            <div className="relative aspect-square bg-muted/30 border border-border">
+            <div className="relative aspect-square bg-gradient-to-br from-muted/20 via-muted/10 to-background border-2 border-border rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-500">
               <Image
                 src={images[selectedImage]}
                 alt={product.title}
                 fill
-                className="object-contain p-8"
+                className="object-contain p-12 transition-transform duration-700 hover:scale-105"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
               
               {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-2">
+              <div className="absolute top-6 left-6 flex flex-col gap-3">
                 {product.discountPercentage > 0 && (
-                  <Badge className="bg-foreground text-background hover:bg-foreground/90 font-light tracking-widest">
+                  <Badge className="bg-gradient-to-r from-red-600 to-rose-600 text-white hover:from-red-700 hover:to-rose-700 font-medium tracking-widest shadow-lg px-4 py-2 text-sm">
                     -{Math.round(product.discountPercentage)}% OFF
                   </Badge>
                 )}
                 {product.stock <= 10 && product.stock > 0 && (
-                  <Badge className="bg-orange-500 hover:bg-orange-500/90 font-light">
+                  <Badge className="bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 font-medium shadow-lg px-4 py-2">
                     Only {product.stock} left
                   </Badge>
                 )}
@@ -189,9 +209,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`relative aspect-square border-2 transition-all ${
+                    className={`relative aspect-square border-2 rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 ${
                       selectedImage === idx 
-                        ? 'border-foreground' 
+                        ? 'border-foreground ring-2 ring-foreground/20 shadow-lg' 
                         : 'border-border hover:border-foreground/50'
                     }`}
                   >
@@ -227,7 +247,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                       </>
                     )}
                   </div>
-                  <h1 className="text-4xl font-light text-foreground leading-tight">
+                  <h1 className="text-4xl md:text-5xl font-light text-foreground leading-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
                     {product.title}
                   </h1>
                 </div>
@@ -236,13 +256,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   variant="outline"
                   size="icon"
                   onClick={handleFavoriteToggle}
-                  className={`rounded-full border-2 ${
+                  className={`rounded-full border-2 transition-all duration-300 hover:scale-110 shadow-lg ${
                     isFavorite 
-                      ? 'border-rose-500 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30' 
-                      : 'border-border hover:border-foreground'
+                      ? 'border-rose-500 text-rose-500 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-950/50' 
+                      : 'border-border hover:border-foreground hover:shadow-xl'
                   }`}
                 >
-                  <Heart className={`h-5 w-5 ${isFavorite ? 'fill-rose-500' : ''}`} />
+                  <Heart className={`h-5 w-5 transition-all ${isFavorite ? 'fill-rose-500' : ''}`} />
                 </Button>
               </div>
 
@@ -267,23 +287,28 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-3 pt-2 border-t border-border">
-              <span className="text-4xl font-light text-foreground">
+            <div className="flex items-baseline gap-4 pt-4 pb-4 border-t border-border">
+              <span className="text-5xl font-light text-foreground bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
                 ${product.price.toFixed(2)}
               </span>
               {originalPrice && (
-                <span className="text-xl text-muted-foreground line-through font-light">
-                  ${originalPrice.toFixed(2)}
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-xl text-muted-foreground line-through font-light">
+                    ${originalPrice.toFixed(2)}
+                  </span>
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                    Save ${(originalPrice - product.price).toFixed(2)}
+                  </span>
+                </div>
               )}
             </div>
 
             {/* Description */}
-            <div className="space-y-2 pt-4">
-              <h3 className="text-sm font-light uppercase tracking-[0.2em] text-muted-foreground">
+            <div className="space-y-3 pt-4 pb-4 border-b border-border">
+              <h3 className="text-sm font-medium uppercase tracking-[0.25em] text-foreground">
                 Description
               </h3>
-              <p className="text-muted-foreground font-light leading-relaxed">
+              <p className="text-muted-foreground font-light leading-relaxed text-base">
                 {product.description}
               </p>
             </div>
@@ -293,7 +318,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <Button
                 onClick={handleAddToCart}
                 disabled={isAddingToCart || isAddedToCart || product.stock === 0}
-                className="flex-1 bg-foreground hover:bg-foreground/90 text-background font-light tracking-widest uppercase text-xs h-14 dark:bg-background dark:text-foreground dark:hover:bg-background/90"
+                className="flex-1 bg-gradient-to-r from-foreground to-foreground/90 hover:from-foreground/90 hover:to-foreground/80 text-background font-medium tracking-widest uppercase text-sm h-16 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 dark:from-background dark:to-background/90 dark:text-foreground"
               >
                 {isAddingToCart ? (
                   <>
@@ -404,6 +429,35 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             )}
           </div>
         </div>
+
+        {/* Similar Products Section */}
+        {similarProducts.length > 0 && (
+          <div className="container mx-auto px-4 py-16 border-t border-border mt-16">
+            <div className="space-y-8">
+              <div className="text-center space-y-3">
+                <h2 className="text-3xl md:text-4xl font-light text-foreground tracking-tight">
+                  Similar Products
+                </h2>
+                <div className="w-16 h-px bg-border mx-auto"></div>
+                <p className="text-muted-foreground font-light">
+                  You might also like these products from the same category
+                </p>
+              </div>
+
+              {loadingSimilar ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {similarProducts.map((similarProduct) => (
+                    <ProductCard key={similarProduct.id} product={similarProduct} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}

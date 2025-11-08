@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { Product, ProductsResponse, ProductFormData } from '@/types/product';
+import type { Category, CategoryResponse } from '@/types/category';
 
 const API_BASE_URL = 'https://dummyjson.com';
 
@@ -12,7 +13,7 @@ const api = axios.create({
 });
 
 // Fetch products with pagination
-export const fetchProducts = async (limit: number = 10, skip: number = 0): Promise<ProductsResponse> => {
+export const fetchProducts = async (limit: number = 12, skip: number = 0): Promise<ProductsResponse> => {
   try {
     const response = await api.get<ProductsResponse>('/products', { params: { limit, skip } });
     return response.data;
@@ -47,8 +48,17 @@ export const fetchProductById = async (id: number): Promise<Product> => {
 // Fetch all categories
 export const fetchCategories = async (): Promise<string[]> => {
   try {
-    const response = await api.get<string[]>('/products/categories');
-    return response.data;
+    const response = await api.get<CategoryResponse>('/products/categories');
+    // Handle both array of strings and array of objects
+    if (Array.isArray(response.data)) {
+      return response.data.map((cat: string | Category) => {
+        if (typeof cat === 'string') return cat;
+        if (cat && typeof cat === 'object' && cat.slug) return cat.slug;
+        if (cat && typeof cat === 'object' && cat.name) return cat.name;
+        return String(cat);
+      });
+    }
+    return [];
   } catch (error) {
     console.error('fetchCategories failed', error);
     throw error;
