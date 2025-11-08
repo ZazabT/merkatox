@@ -37,7 +37,12 @@ export default function Home() {
         setProducts(response.products);
         setSkip(LIMIT);
       } else {
-        setProducts((prev) => [...prev, ...response.products]);
+        // Deduplicate products by ID
+        setProducts((prev) => {
+          const existingIds = new Set(prev.map(p => p.id));
+          const newProducts = response.products.filter(p => !existingIds.has(p.id));
+          return [...prev, ...newProducts];
+        });
         setSkip((prev) => prev + LIMIT);
       }
 

@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, Star, ChevronLeft, ChevronRight, ShoppingCart, Check, Loader2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { toggleFavorite } from '@/lib/redux/slices/favoritesSlice';
+import { toast } from 'sonner';
 
 interface ProductCardProps {
   product: Product;
@@ -33,7 +34,18 @@ export default function ProductCard({ product }: ProductCardProps) {
   const handleFavoriteToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    const wasAdded = !isFavorite;
     dispatch(toggleFavorite(product));
+    
+    if (wasAdded) {
+      toast.success('Added to favorites!', {
+        description: `${product.title} has been added to your favorites.`,
+      });
+    } else {
+      toast.info('Removed from favorites', {
+        description: `${product.title} has been removed from your favorites.`,
+      });
+    }
   };
 
   const nextImage = (e: React.MouseEvent) => {
@@ -62,7 +74,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.id}`} className="block">
-      <Card className="w-full overflow-hidden group bg-white text-foreground  hover:shadow-xl transition-all duration-500 h-full flex flex-col rounded-none border border-gray-300">
+      <Card className="w-full overflow-hidden group bg-white text-foreground hover:shadow-2xl transition-all duration-500 h-full flex flex-col rounded-lg border-2 border-gray-200 hover:border-black max-h-[560px]">
         
         {/* Image Carousel */}
         <div className="relative aspect-3/4 overflow-hidden bg-gray-50">
@@ -126,12 +138,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             {product.discountPercentage > 0 && (
-              <Badge className="bg-black text-white hover:bg-black/90 font-light tracking-widest uppercase">
+              <Badge className="bg-red-600 text-white hover:bg-red-700 font-medium tracking-widest uppercase shadow-lg">
                 -{Math.round(product.discountPercentage)}% OFF
               </Badge>
             )}
             {product.stock <= 10 && product.stock > 0 && (
-              <Badge className="bg-orange-500 hover:bg-orange-500/90 font-light tracking-wide">
+              <Badge className="bg-orange-600 text-white hover:bg-orange-700 font-medium tracking-wide shadow-lg">
                 Only {product.stock} left
               </Badge>
             )}
@@ -141,46 +153,48 @@ export default function ProductCard({ product }: ProductCardProps) {
           <Button
             variant="secondary"
             size="icon"
-            className={`absolute top-3 right-3 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white transition-all ${
-              isFavorite ? 'text-rose-500' : 'text-gray-700'
+            className={`absolute top-3 right-3 h-9 w-9 rounded-full backdrop-blur-sm shadow-xl hover:scale-110 transition-all duration-300 ${
+              isFavorite 
+                ? 'bg-rose-500 text-white hover:bg-rose-600' 
+                : 'bg-white/90 hover:bg-white text-gray-700'
             }`}
             onClick={handleFavoriteToggle}
           >
-            <Heart className={`h-4 w-4 ${isFavorite ? 'fill-rose-500' : ''}`} />
+            <Heart className={`h-4 w-4 ${isFavorite ? 'fill-white' : ''}`} />
           </Button>
         </div>
 
         {/* Content */}
-        <CardContent className="p-5 flex-grow">
+        <CardContent className="p-5 bg-white">
           <div className="space-y-3">
             {/* Category & Brand */}
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-gray-500 font-light uppercase tracking-[0.2em]">
+              <span className="text-[10px] text-gray-600 font-medium uppercase tracking-[0.2em]">
                 {product.category}
               </span>
               {product.brand && (
-                <span className="text-[10px] text-gray-400 font-light uppercase tracking-wider">
+                <span className="text-[10px] text-gray-500 font-light uppercase tracking-wider">
                   {product.brand}
                 </span>
               )}
             </div>
 
             {/* Title */}
-            <h3 className="font-light text-gray-900 line-clamp-2 leading-snug group-hover:text-gray-600 transition-colors">
+            <h3 className="font-medium text-gray-900 line-clamp-2 leading-snug group-hover:text-gray-700 transition-colors">
               {product.title}
             </h3>
 
             {/* Rating */}
             <div className="flex items-center gap-2">
               <div className="flex items-center">
-                <Star className="h-3.5 w-3.5 fill-gray-900 text-gray-900" />
-                <span className="ml-1 text-sm font-light">{product.rating.toFixed(1)}</span>
+                <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                <span className="ml-1 text-sm font-medium text-gray-900">{product.rating.toFixed(1)}</span>
               </div>
-              <span className="text-xs text-gray-400 font-light">
-                ({product.reviews?.length || 0} reviews)
+              <span className="text-xs text-gray-500 font-light">
+                ({product.reviews?.length || 0})
               </span>
               {product.stock > 20 && (
-                <span className="text-xs text-emerald-600 ml-auto font-light tracking-wide">
+                <span className="text-xs text-emerald-600 ml-auto font-medium tracking-wide">
                   In Stock
                 </span>
               )}
@@ -188,7 +202,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             {/* Price */}
             <div className="flex items-baseline gap-2 pt-1">
-              <span className="text-xl font-light text-gray-900 tracking-wide">
+              <span className="text-2xl font-bold text-gray-900 tracking-wide">
                 ${product.price.toFixed(2)}
               </span>
               {originalPrice && (
@@ -201,9 +215,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         </CardContent>
 
         {/* Footer */}
-        <CardFooter className="p-5 pt-0">
+        <CardFooter className="p-5 pt-0 bg-white">
           <Button
-            className="w-full bg-gray-900 hover:bg-gray-800 text-white font-light tracking-widest uppercase text-xs transition-all"
+            className="w-full bg-gray-900 hover:bg-black text-white font-medium tracking-widest uppercase text-xs transition-all"
             onClick={handleAddToCart}
             disabled={isAddingToCart || isAddedToCart}
           >
